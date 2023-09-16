@@ -2,6 +2,7 @@ package dev.robgleason.services;
 
 import dev.robgleason.dto.UserEntityDto;
 import dev.robgleason.entity.UserEntity;
+import dev.robgleason.exception.ResourceNotFoundException;
 import dev.robgleason.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
@@ -20,13 +21,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntityDto getUserById(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found with id " + userId));
+        return modelMapper.map(user, UserEntityDto.class);
 
-
-        return null;
     }
 
     @Override
     public List<UserEntityDto> getAllUsers() {
+
+
         return null;
     }
 
