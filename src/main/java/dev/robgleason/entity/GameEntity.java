@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,5 +26,13 @@ public class GameEntity {
     private Integer releaseYear;
     private String coverArtUrl;
     private String description;
-    
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "game_collection",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "collection_id")
+    )
+    private Set<CollectionEntity> collections;
+
 }

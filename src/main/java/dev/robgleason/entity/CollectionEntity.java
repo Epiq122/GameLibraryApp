@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,4 +23,13 @@ public class CollectionEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "collection_games",
+            joinColumns = @JoinColumn(name = "collection_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id")
+    )
+    private Set<GameEntity> games;
 }
