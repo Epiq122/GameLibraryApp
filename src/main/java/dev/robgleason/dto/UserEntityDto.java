@@ -15,6 +15,7 @@ public class UserEntityDto implements Serializable {
 
     Long id;
     String username;
+    String password;
     String email;
     String firstName;
     String lastName;
