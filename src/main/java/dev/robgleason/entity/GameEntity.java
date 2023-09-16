@@ -35,4 +35,5 @@ public class GameEntity {
     )
     private Set<CollectionEntity> collections;
 
+
 }
