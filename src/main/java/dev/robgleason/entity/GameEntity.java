@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,5 +36,9 @@ public class GameEntity {
     )
     private Set<CollectionEntity> collections;
 
+
+    @OneToMany
+    @JoinColumn(name = "game_id")
+    private List<ReviewsEntity> reviews;
 
 }

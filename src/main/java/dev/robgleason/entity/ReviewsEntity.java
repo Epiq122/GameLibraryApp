@@ -21,4 +21,8 @@ public class ReviewsEntity {
     private Integer rating;
     private String comment;
 
+    @ManyToOne
+    @JoinColumn(name = "game_id")
+    private GameEntity game;
+
 }
