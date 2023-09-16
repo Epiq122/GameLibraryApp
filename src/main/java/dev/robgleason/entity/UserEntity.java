@@ -3,6 +3,8 @@ package dev.robgleason.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -31,6 +33,11 @@ public class UserEntity {
     private String lastName;
     private String city;
     private String country;
+
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Set<CollectionEntity> collections;
 
 
 }
