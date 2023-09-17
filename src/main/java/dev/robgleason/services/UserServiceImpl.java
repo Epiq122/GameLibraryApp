@@ -8,12 +8,17 @@ import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 @AllArgsConstructor
+@Transactional
+
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -28,13 +33,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntityDto> getAllUsers() {
-
-
-        return null;
-    }
-
-    @Override
     public UserEntityDto createUser(UserEntityDto userEntityDto) {
         UserEntity user = modelMapper.map(userEntityDto, UserEntity.class);
         UserEntity savedUser = userRepository.save(user);
@@ -43,12 +41,74 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntityDto getUserByUsername(String username) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found with username " + username);
+        }
+        return modelMapper.map(user, UserEntityDto.class);
+
+    }
+
+
+    @Override
+    public UserEntityDto getUserByEmail(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found with email " + email);
+        }
+        return modelMapper.map(user, UserEntityDto.class);
+
+    }
+
+    @Override
+    public List<UserEntityDto> getAllUsers() {
+        List<UserEntity> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserEntityDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public UserEntityDto updateUser(UserEntityDto userEntityDto) {
-        return null;
+        UserEntity existingUser = userRepository.findById(userEntityDto.getId()).get();
+        existingUser.setUsername(userEntityDto.getUsername());
+        existingUser.setPassword(userEntityDto.getPassword());
+        existingUser.setCity(userEntityDto.getCity());
+        existingUser.setCountry(userEntityDto.getCountry());
+        existingUser.setEmail(userEntityDto.getEmail());
+        existingUser.setFirstName(userEntityDto.getFirstName());
+        existingUser.setLastName(userEntityDto.getLastName());
+
+        UserEntity updatedUser = userRepository.save(existingUser);
+        return modelMapper.map(updatedUser, UserEntityDto.class);
     }
 
     @Override
     public void deleteUser(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User with id " + userId + " " + "does not exist"));
+        userRepository.deleteById(userId);
+    }
 
+    @Override
+    public void deleteUserByUsername(String username) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found with username " + username);
+        }
+        userRepository.deleteUserByUsername(username);
+    }
+
+    @Override
+    public void deleteUserByEmail(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found with email " + email);
+        }
+        userRepository.deleteUserByEmail(email);
     }
 }
