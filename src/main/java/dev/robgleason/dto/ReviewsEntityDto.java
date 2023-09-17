@@ -14,4 +14,5 @@ public class ReviewsEntityDto implements Serializable {
     Long id;
     Integer rating;
     String comment;
+    Long gameId;
 }
