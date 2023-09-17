@@ -3,6 +3,7 @@ package dev.robgleason.services;
 import dev.robgleason.dto.UserEntityDto;
 import dev.robgleason.entity.UserEntity;
 import dev.robgleason.exception.ResourceNotFoundException;
+import dev.robgleason.exception.UserNotFoundException;
 import dev.robgleason.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
@@ -43,11 +44,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntityDto getUserByUsername(String username) {
         UserEntity user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new ResourceNotFoundException("user not found with username " + username);
-        }
         return modelMapper.map(user, UserEntityDto.class);
 
+    }
+
+    private UserEntity findByUsername(String username) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException("user not found with username " + username);
+        }
+        return user;
     }
 
 
@@ -55,18 +61,24 @@ public class UserServiceImpl implements UserService {
     public UserEntityDto getUserByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new ResourceNotFoundException("user not found with email " + email);
+            throw new UserNotFoundException("user not found with email " + email);
         }
         return modelMapper.map(user, UserEntityDto.class);
 
     }
 
+    private UserEntity findByEmail(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("user not found with email  " + email);
+        }
+        return user;
+    }
+
+
     @Override
     public List<UserEntityDto> getAllUsers() {
         List<UserEntity> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            return Collections.emptyList();
-        }
         return users.stream()
                 .map(user -> modelMapper.map(user, UserEntityDto.class))
                 .collect(Collectors.toList());
@@ -74,7 +86,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntityDto updateUser(UserEntityDto userEntityDto) {
-        UserEntity existingUser = userRepository.findById(userEntityDto.getId()).get();
+        UserEntity existingUser = userRepository.findById(userEntityDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userEntityDto.getId()));
+
+
         existingUser.setUsername(userEntityDto.getUsername());
         existingUser.setPassword(userEntityDto.getPassword());
         existingUser.setCity(userEntityDto.getCity());

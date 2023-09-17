@@ -10,5 +10,10 @@ import java.util.Set;
 public interface GameRepository extends JpaRepository<GameEntity, Long> {
 
 
+    List<GameEntity> findByTitle(String title);
+
+    List<GameEntity> findByGenre(String genre);
+
+    Long deleteByTitle(String title);
 }
 
