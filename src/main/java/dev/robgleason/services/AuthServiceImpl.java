@@ -8,6 +8,7 @@ import dev.robgleason.entity.UserEntity;
 import dev.robgleason.exception.UserApiException;
 import dev.robgleason.repository.RoleRepository;
 import dev.robgleason.repository.UserRepository;
+import dev.robgleason.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
+    private JwtTokenProvider jwtTokenProvider;
 
 
     @Override
@@ -55,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setRoles(roles);
         userRepository.save(user);
-        return "User Registered Succesfffully";
+        return "User Registered Successfully";
     }
 
     @Override
@@ -65,6 +67,6 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User Successfully Logged-In";
+        return jwtTokenProvider.generateToken(authentication);
     }
 }
