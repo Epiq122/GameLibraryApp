@@ -1,7 +1,9 @@
 package dev.robgleason.controller;
 
 
+import dev.robgleason.dto.CollectionEntityDto;
 import dev.robgleason.dto.UserEntityDto;
+import dev.robgleason.services.CollectionsService;
 import dev.robgleason.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserController {
 
     private UserService userService;
+    private CollectionsService collectionsService;
 
 
     @PostMapping
@@ -57,6 +60,12 @@ public class UserController {
     public ResponseEntity<UserEntityDto> getUserByEmail(@PathVariable("email") String email) {
         UserEntityDto userByUserEmailDto = userService.getUserByEmail(email);
         return ResponseEntity.ok(userByUserEmailDto);
+    }
+
+    @GetMapping("/collections/{id}")
+    public ResponseEntity<List<CollectionEntityDto>> getCollectionsByUser(@PathVariable("id") Long userId) {
+        List<CollectionEntityDto> collections = collectionsService.getCollectionByUser(userId);
+        return ResponseEntity.ok(collections);
     }
 
     @DeleteMapping("{id}")

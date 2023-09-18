@@ -11,6 +11,7 @@ import java.util.Set;
 
 public interface CollectionRepository extends JpaRepository<CollectionEntity, Long> {
 
+    List<CollectionEntity> findByUserId(Long userId);
 
 }
 
