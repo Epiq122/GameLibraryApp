@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Game } from '../common/game';
+import { map, Observable, tap } from 'rxjs';
 import axios from 'axios';
 
 @Injectable({
@@ -8,19 +10,9 @@ import axios from 'axios';
 export class GameService {
   private baseUrl = 'http://localhost:8080/api/games';
 
-  async getGamesList() {
-    try {
-      const response = await axios.get<Game[]>(this.baseUrl);
-      return response.data;
-    } catch (error) {
-      console.log('Error fetching games:', error);
-      throw error;
-    }
-  }
-}
+  constructor(private httpClient: HttpClient) {}
 
-interface GetResponse {
-  _embedded: {
-    games: Game[];
-  };
+  getGamesList(): Observable<Game[]> {
+    return this.httpClient.get<Game[]>(this.baseUrl);
+  }
 }

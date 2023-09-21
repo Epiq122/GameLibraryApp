@@ -16,11 +16,14 @@ export class GamesComponent implements OnInit {
     this.listGames();
   }
 
-  private async listGames() {
-    try {
-      this.games = await this.gameService.getGamesList();
-    } catch (error) {
-      // Handle errors as needed
-    }
+  private listGames() {
+    this.gameService.getGamesList().subscribe(
+      (games) => {
+        this.games = games;
+      },
+      (error) => {
+        // Handle errors as needed
+      }
+    );
   }
 }
